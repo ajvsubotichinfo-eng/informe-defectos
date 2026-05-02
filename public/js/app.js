@@ -66,8 +66,10 @@ const auth = (() => {
 
 /* ══════════════════════════════════════════════════
    FORMULARIO — gestión de severidad
+   (nombre `formCtrl`, no `form`, para evitar choque
+    con la propiedad nativa HTMLButtonElement.form)
 ══════════════════════════════════════════════════ */
-const form = (() => {
+const formCtrl = (() => {
 
   let _currentSev = '';
 
@@ -127,7 +129,7 @@ const damages = (() => {
     const subarea  = document.getElementById('fSubarea').value.trim();
     const title    = document.getElementById('fTitle').value.trim();
     const desc     = document.getElementById('fDesc').value.trim();
-    const sev      = form.getSev();
+    const sev      = formCtrl.getSev();
 
     const error = _validate(area, title);
     if (error) { alert(error); return; }
@@ -146,7 +148,7 @@ const damages = (() => {
         photoFiles: photos.getFiles(),
       });
 
-      form.reset();
+      formCtrl.reset();
       await refresh();
       setTimeout(() => tabs.switchDirect('listado'), 300);
     } catch (err) {

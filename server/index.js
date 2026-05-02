@@ -7,7 +7,7 @@
  *   /api/*       → endpoints JSON (ver routes.js)
  */
 
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdir } from 'node:fs/promises';
@@ -18,6 +18,8 @@ import fastifyMultipart from '@fastify/multipart';
 
 import routes from './routes.js';
 import { pingDb } from './db.js';
+
+dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT       = path.resolve(__dirname, '..');
