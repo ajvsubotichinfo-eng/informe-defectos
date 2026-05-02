@@ -13,7 +13,8 @@
     10. Exportar bar
     11. Lightbox
     12. Estados vacíos
-    13. Print
+    13. Login & barra de usuario
+    14. Print
    ══════════════════════════════════════════════════ */
 
 
@@ -107,6 +108,50 @@ header h1 em {
   font-size: 0.88rem;
   color: #e8e0d4;
   font-weight: 300;
+}
+
+/* Barra de usuario logueado */
+.user-bar {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.user-info {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: #d8cfc0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.user-info strong {
+  color: var(--paper);
+  font-weight: 700;
+}
+.user-icon { font-size: 0.9rem; }
+.btn-logout {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.8rem;
+  background: transparent;
+  color: #d8cfc0;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-logout:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--paper);
+  border-color: rgba(255,255,255,0.5);
 }
 
 
@@ -378,6 +423,18 @@ main {
   color: var(--muted);
   margin-bottom: 0.2rem;
 }
+.card-subarea {
+  font-style: italic;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: #5a5040;
+  margin-left: 0.2rem;
+}
+.card-author {
+  font-style: italic;
+  letter-spacing: 0.04em;
+  margin-left: 0.3rem;
+}
 .card-title {
   font-family: 'DM Serif Display', serif;
   font-size: 1rem;
@@ -560,7 +617,73 @@ main {
 .empty p { font-size: 0.85rem; line-height: 1.6; }
 
 
-/* ─── 13. PRINT ────────────────────────────────── */
+/* ─── 13. LOGIN & PANTALLA DE PIN ─────────────── */
+.login-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--paper);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  padding: 1rem;
+}
+.login-screen[style*="flex"] { display: flex; }
+.login-box {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 2.5rem 2rem;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  text-align: center;
+}
+.login-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.6rem;
+}
+.login-box h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin-bottom: 0.4rem;
+}
+.login-hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+.login-box input[type="password"] {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 1.2rem;
+  letter-spacing: 0.3em;
+  text-align: center;
+  background: var(--paper);
+  color: var(--ink);
+  margin-bottom: 1rem;
+  transition: border-color 0.15s;
+}
+.login-box input[type="password"]:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: white;
+}
+.login-box .btn-primary { margin-top: 0; }
+.login-error {
+  margin-top: 0.8rem;
+  min-height: 1.2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--red);
+}
+
+
+/* ─── 14. PRINT ────────────────────────────────── */
 @media print {
   header {
     background: black !important;
@@ -571,7 +694,9 @@ main {
   .tabs,
   .export-bar,
   .btn-sm,
-  .card-actions { display: none !important; }
+  .card-actions,
+  .user-bar,
+  .login-screen { display: none !important; }
 
   #tab-listado { display: block !important; }
   .damage-card { break-inside: avoid; page-break-inside: avoid; }

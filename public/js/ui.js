@@ -1,12 +1,8 @@
 /**
  * ui.js — Capa de renderizado / DOM
  * ────────────────────────────────────────────────
- * Responsabilidad única: construir y actualizar
- * elementos del DOM. No contiene lógica de negocio
- * ni accede directamente a localStorage.
- *
- * Cada función recibe los datos que necesita
- * como parámetros → fácil de testear y reutilizar.
+ * Construye y actualiza el DOM. No sabe de la API
+ * ni de localStorage; recibe todo por parámetros.
  */
 
 
@@ -22,7 +18,6 @@ const tabs = (() => {
     if (event) event.target.closest('.tab').classList.add('active');
   }
 
-  /** Cambia de tab sin necesidad de un evento (llamada programática) */
   function switchDirect(id) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -56,28 +51,28 @@ const lightbox = (() => {
 
 
 /* ══════════════════════════════════════════════════
-   FOTOS — thumbnails en el formulario
+   FOTOS — manejo de archivos en el formulario
+   Guarda los `File` reales (para subirlos por multipart)
+   y muestra previews con object URLs.
 ══════════════════════════════════════════════════ */
 const photos = (() => {
 
-  let _current = []; // base64 array temporal (antes de guardar)
+  let _files       = [];   // File[]
+  let _previewUrls = [];   // string[] (object URLs paralelos a _files)
 
   function handle(event) {
-    const files = Array.from(event.target.files);
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = ev => {
-        _current.push(ev.target.result);
-        _renderThumbs();
-      };
-      reader.readAsDataURL(file);
+    const newFiles = Array.from(event.target.files);
+    newFiles.forEach(file => {
+      _files.push(file);
+      _previewUrls.push(URL.createObjectURL(file));
     });
+    _renderThumbs();
   }
 
   function _renderThumbs() {
     const container = document.getElementById('thumbsContainer');
     container.innerHTML = '';
-    _current.forEach((src, i) => {
+    _previewUrls.forEach((src, i) => {
       const div = document.createElement('div');
       div.className = 'thumb';
       div.innerHTML = `
@@ -89,21 +84,25 @@ const photos = (() => {
   }
 
   function remove(index) {
-    _current.splice(index, 1);
+    URL.revokeObjectURL(_previewUrls[index]);
+    _files.splice(index, 1);
+    _previewUrls.splice(index, 1);
     _renderThumbs();
   }
 
-  function getAll() {
-    return [..._current];
+  function getFiles() {
+    return [..._files];
   }
 
   function reset() {
-    _current = [];
+    _previewUrls.forEach(url => URL.revokeObjectURL(url));
+    _files = [];
+    _previewUrls = [];
     document.getElementById('thumbsContainer').innerHTML = '';
     document.getElementById('fPhotos').value = '';
   }
 
-  return { handle, remove, getAll, reset };
+  return { handle, remove, getFiles, reset };
 
 })();
 
@@ -157,6 +156,21 @@ const renderer = (() => {
     grave:    '🔴 Grave',
   };
 
+  const SEV_PLURAL = {
+    leve:     'Leves',
+    moderado: 'Moderados',
+    grave:    'Graves',
+  };
+
+  function _escape(str) {
+    return String(str ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
   function _shortenUrl(url) {
     try {
       const u = new URL(url);
@@ -175,7 +189,7 @@ const renderer = (() => {
     const photosHtml = damage.photos.length
       ? `<div class="evidence-photos">
           ${damage.photos.map(p =>
-            `<img src="${p}" onclick="lightbox.open('${p}')" title="Ver foto">`
+            `<img src="${_escape(p)}" onclick="lightbox.open('${_escape(p)}')" title="Ver foto">`
           ).join('')}
         </div>`
       : '';
@@ -183,7 +197,7 @@ const renderer = (() => {
     const linksHtml = damage.videos.length
       ? `<div class="evidence-links">
           ${damage.videos.map(v =>
-            `<a href="${v}" target="_blank">🎬 ${_shortenUrl(v)}</a>`
+            `<a href="${_escape(v)}" target="_blank" rel="noopener">🎬 ${_escape(_shortenUrl(v))}</a>`
           ).join('')}
         </div>`
       : '';
@@ -191,34 +205,47 @@ const renderer = (() => {
     return `<div class="card-evidence">${photosHtml}${linksHtml}</div>`;
   }
 
-  function _buildCard(damage, index) {
+  function _buildCard(damage, index, currentUser) {
     const descHtml = damage.desc
-      ? `<div class="card-desc">${damage.desc}</div>`
+      ? `<div class="card-desc">${_escape(damage.desc)}</div>`
+      : '';
+
+    const subareaHtml = damage.subarea
+      ? ` <span class="card-subarea">› ${_escape(damage.subarea)}</span>`
+      : '';
+
+    const isOwner = damage.created_by === currentUser;
+    const deleteBtn = isOwner
+      ? `<button class="btn-sm del" onclick="damages.remove(${damage.id})">Eliminar</button>`
+      : '';
+
+    const authorHtml = damage.created_by
+      ? `<span class="card-author">· por ${_escape(damage.created_by)}</span>`
       : '';
 
     return `
       <div class="damage-card">
         <div class="card-header">
           <div class="card-left">
-            <div class="card-area">Nº${index + 1} · ${damage.area}</div>
-            <div class="card-title">${damage.title}</div>
+            <div class="card-area">Nº${index + 1} · ${_escape(damage.area)}${subareaHtml}</div>
+            <div class="card-title">${_escape(damage.title)}</div>
             ${descHtml}
           </div>
           <span class="card-sev sev-${damage.severity}">
-            ${SEV_LABELS[damage.severity] || damage.severity}
+            ${SEV_LABELS[damage.severity] || _escape(damage.severity)}
           </span>
         </div>
         ${_buildEvidenceBlock(damage)}
         <div class="card-actions">
-          <span class="card-date">Registrado: ${damage.date}</span>
-          <button class="btn-sm del" onclick="damages.remove(${damage.id})">Eliminar</button>
+          <span class="card-date">Registrado: ${_escape(damage.date)} ${authorHtml}</span>
+          ${deleteBtn}
         </div>
       </div>
     `;
   }
 
   /** Renderiza la lista completa de daños */
-  function list(damageArray) {
+  function list(damageArray, currentUser) {
     const el = document.getElementById('damageList');
     document.getElementById('totalBadge').textContent = damageArray.length;
 
@@ -226,7 +253,7 @@ const renderer = (() => {
       el.innerHTML = `
         <div class="empty">
           <div class="empty-icon">📋</div>
-          <p>Todavía no registraste ningún daño.<br>
+          <p>Todavía no se registró ningún daño.<br>
              Usá la pestaña <strong>"+ Registrar Daño"</strong> para comenzar.</p>
         </div>
       `;
@@ -237,7 +264,7 @@ const renderer = (() => {
       (a, b) => SEV_ORDER[a.severity] - SEV_ORDER[b.severity]
     );
 
-    el.innerHTML = sorted.map((d, i) => _buildCard(d, i)).join('');
+    el.innerHTML = sorted.map((d, i) => _buildCard(d, i, currentUser)).join('');
   }
 
   /** Renderiza las píldoras de conteo por gravedad */
@@ -255,12 +282,10 @@ const renderer = (() => {
     const pills = Object.entries(counts)
       .filter(([, count]) => count > 0)
       .map(([sev, count]) => {
-        const plural = count > 1 && sev !== 'grave'
-          ? (sev === 'leve' ? 's' : 's')
-          : '';
+        const label = count === 1 ? _capitalize(sev) : SEV_PLURAL[sev];
         return `
           <div class="counter-pill ${sev}">
-            <span class="num">${count}</span> ${_capitalize(sev)}${plural}
+            <span class="num">${count}</span> ${label}
           </div>
         `;
       });
@@ -268,13 +293,11 @@ const renderer = (() => {
     bar.innerHTML = pills.join('');
   }
 
-  /** Actualiza el número entre paréntesis en la tab de listado */
   function tabCount(total) {
     const el = document.getElementById('tabCount');
     el.textContent = total ? `(${total})` : '';
   }
 
-  /** Actualiza la fecha de generación en el header */
   function headerDate() {
     document.getElementById('genDate').textContent =
       new Date().toLocaleDateString('es-AR', {
@@ -287,8 +310,8 @@ const renderer = (() => {
   }
 
   /** Llama a todos los renders del listado */
-  function all(damageArray) {
-    list(damageArray);
+  function all(damageArray, currentUser) {
+    list(damageArray, currentUser);
     counters(damageArray);
     tabCount(damageArray.length);
   }

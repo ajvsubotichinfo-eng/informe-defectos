@@ -43,12 +43,38 @@
         <span id="genDate"></span>
       </div>
     </div>
+
+    <!-- Indicador de usuario logueado -->
+    <div class="user-bar" id="userBar" style="display:none;">
+      <span class="user-info">
+        <span class="user-icon">👤</span>
+        Sesión: <strong id="userName"></strong>
+      </span>
+      <button class="btn-logout" onclick="auth.logout()">Cerrar sesión</button>
+    </div>
   </header>
 
   <!-- ══════════════════════════════════════
-       MAIN CONTENT
+       PANTALLA DE LOGIN
   ══════════════════════════════════════ -->
-  <main>
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <div class="login-icon">🔒</div>
+      <h2>Acceso al informe</h2>
+      <p class="login-hint">Ingresá tu PIN personal para continuar</p>
+      <form id="loginForm" onsubmit="event.preventDefault(); auth.tryLogin();">
+        <input type="password" id="loginPin" placeholder="••••" autocomplete="off"
+               inputmode="numeric" maxlength="20" autofocus>
+        <button class="btn-primary" type="submit">Entrar</button>
+        <div class="login-error" id="loginError"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT (oculto hasta login)
+  ══════════════════════════════════════ -->
+  <main id="appMain" style="display:none;">
 
     <!-- Tabs de navegación -->
     <div class="tabs">
@@ -107,6 +133,11 @@
         </div>
 
         <div class="form-row">
+          <label>Sub-área (opcional)</label>
+          <input type="text" id="fSubarea" placeholder="Ej: Bajo mesada, esquina derecha, tras la heladera..." />
+        </div>
+
+        <div class="form-row">
           <label>Descripción del Daño</label>
           <input type="text" id="fTitle" placeholder="Ej: Azulejo roto en piso de cocina" />
         </div>
@@ -150,7 +181,6 @@
       <div class="export-bar">
         <button class="btn-export filled" onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
         <button class="btn-export" onclick="exporter.toJSON()">⬇ Exportar datos (JSON)</button>
-        <button class="btn-export danger" onclick="damages.clearAll()">🗑 Limpiar todo</button>
       </div>
 
       <div class="list-header">

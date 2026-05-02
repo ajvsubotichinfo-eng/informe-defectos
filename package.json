@@ -1,0 +1,21 @@
+{
+  "name": "informe-danos",
+  "version": "1.0.0",
+  "description": "Informe colaborativo de daños preexistentes en vivienda",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@fastify/multipart": "^8.3.0",
+    "@fastify/static": "^7.0.4",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.28.1",
+    "mysql2": "^3.11.0"
+  }
+}
