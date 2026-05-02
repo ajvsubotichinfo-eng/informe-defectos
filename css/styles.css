@@ -1,0 +1,580 @@
+/* ══════════════════════════════════════════════════
+   styles.css — Informe de Inspección de Vivienda
+   Estructura:
+     1. Variables / Reset
+     2. Header
+     3. Layout principal
+     4. Tabs
+     5. Formulario
+     6. Botones
+     7. Fotos & Videos
+     8. Cards de daños
+     9. Contadores
+    10. Exportar bar
+    11. Lightbox
+    12. Estados vacíos
+    13. Print
+   ══════════════════════════════════════════════════ */
+
+
+/* ─── 1. VARIABLES & RESET ─────────────────────── */
+:root {
+  --ink:         #1a1a18;
+  --paper:       #f5f0e8;
+  --cream:       #ede8dc;
+  --red:         #c0392b;
+  --red-light:   #f9eded;
+  --amber:       #d68910;
+  --amber-light: #fef9ec;
+  --green:       #1e8449;
+  --green-light: #eafaf1;
+  --border:      #c8c0b0;
+  --muted:       #7a7060;
+  --orange:      #e65100;
+  --orange-light:#fff3e0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  font-family: 'Lato', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+
+/* ─── 2. HEADER ────────────────────────────────── */
+header {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2rem 2.5rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  border: 40px solid rgba(255,255,255,0.04);
+  border-radius: 50%;
+}
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: 60px;
+  width: 150px; height: 150px;
+  border: 30px solid rgba(255,255,255,0.03);
+  border-radius: 50%;
+}
+.header-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-bottom: 0.4rem;
+}
+header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+}
+header h1 em {
+  opacity: 0.7;
+  font-style: italic;
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding-top: 1.2rem;
+}
+.meta-item label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #888;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+.meta-item span {
+  font-size: 0.88rem;
+  color: #e8e0d4;
+  font-weight: 300;
+}
+
+
+/* ─── 3. LAYOUT PRINCIPAL ──────────────────────── */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+
+/* ─── 4. TABS ──────────────────────────────────── */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.tab {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.15s;
+}
+.tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+
+/* ─── 5. FORMULARIO ────────────────────────────── */
+.form-panel {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  padding: 1.8rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.form-panel h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--cream);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.form-panel h2 .icon { font-size: 1.1rem; }
+
+.form-row { margin-bottom: 1rem; }
+.form-row > label {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+.form-row input,
+.form-row textarea,
+.form-row select {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  font-family: 'Lato', sans-serif;
+  font-size: 0.88rem;
+  background: var(--paper);
+  color: var(--ink);
+  transition: border-color 0.15s;
+}
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: white;
+}
+.form-row textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 560px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+/* Severidad */
+.severity-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.sev-btn {
+  padding: 0.35rem 0.9rem;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-family: 'DM Mono', monospace;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.15s;
+}
+.sev-btn[data-sev="leve"].active     { background: var(--amber-light);  border-color: var(--amber);  color: var(--amber); }
+.sev-btn[data-sev="moderado"].active { background: var(--orange-light);  border-color: var(--orange); color: var(--orange); }
+.sev-btn[data-sev="grave"].active    { background: var(--red-light);    border-color: var(--red);    color: var(--red); }
+
+
+/* ─── 6. BOTONES ───────────────────────────────── */
+.btn-primary {
+  width: 100%;
+  padding: 0.8rem;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 3px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-top: 1rem;
+}
+.btn-primary:hover { opacity: 0.82; }
+
+.btn-icon {
+  padding: 0.55rem 0.7rem;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+}
+.btn-icon:hover         { background: var(--ink); color: white; border-color: var(--ink); }
+.btn-icon.danger:hover  { background: var(--red); border-color: var(--red); }
+
+.btn-add-video {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 0.4rem 0.8rem;
+  border: 1.5px dashed var(--border);
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s;
+  margin-top: 0.3rem;
+}
+.btn-add-video:hover { border-color: var(--ink); color: var(--ink); }
+
+.btn-sm {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  padding: 0.3rem 0.7rem;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  border-radius: 2px;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.btn-sm.del:hover { background: var(--red); color: white; border-color: var(--red); }
+
+
+/* ─── 7. FOTOS & VIDEOS ────────────────────────── */
+.photo-zone {
+  border: 2px dashed var(--border);
+  border-radius: 4px;
+  padding: 1.2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  background: var(--paper);
+  position: relative;
+}
+.photo-zone:hover { border-color: var(--ink); }
+.photo-zone input[type=file] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.photo-zone p {
+  font-size: 0.82rem;
+  color: var(--muted);
+  pointer-events: none;
+}
+.photo-zone .upload-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.thumbs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+.thumb  { position: relative; width: 72px; height: 72px; }
+.thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.thumb img:hover { transform: scale(1.06); }
+.thumb .del-thumb {
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 18px; height: 18px;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.video-entry { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.video-entry input { flex: 1; }
+
+
+/* ─── 8. CARDS DE DAÑOS ────────────────────────── */
+.damage-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  animation: slideIn 0.25s ease;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem 1.2rem;
+  gap: 1rem;
+}
+.card-left { flex: 1; min-width: 0; }
+.card-area {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+.card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1rem;
+  font-weight: 400;
+}
+.card-desc {
+  font-size: 0.83rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+  line-height: 1.5;
+}
+.card-sev {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sev-leve     { background: var(--amber-light);  color: var(--amber);  border: 1px solid var(--amber); }
+.sev-moderado { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange); }
+.sev-grave    { background: var(--red-light);    color: var(--red);    border: 1px solid var(--red); }
+
+.card-evidence {
+  border-top: 1px solid var(--cream);
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  background: #fafaf8;
+}
+.evidence-photos { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.evidence-photos img {
+  width: 60px; height: 60px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.evidence-photos img:hover { transform: scale(1.08); }
+
+.evidence-links { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+.evidence-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: #1a6fa8;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  word-break: break-all;
+}
+.evidence-links a:hover { text-decoration: underline; }
+
+.card-actions {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border-top: 1px solid var(--cream);
+  justify-content: flex-end;
+  align-items: center;
+}
+.card-actions .card-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted);
+  margin-right: auto;
+}
+
+
+/* ─── 9. CONTADORES ────────────────────────────── */
+.counter-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.counter-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 3px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+}
+.counter-pill .num { font-size: 1rem; font-weight: 700; }
+.counter-pill.leve     { background: var(--amber-light);  color: var(--amber); }
+.counter-pill.moderado { background: var(--orange-light); color: var(--orange); }
+.counter-pill.grave    { background: var(--red-light);    color: var(--red); }
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.list-header h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+.badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  background: var(--red);
+  color: white;
+}
+
+
+/* ─── 10. EXPORT BAR ───────────────────────────── */
+.export-bar {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+.btn-export {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--ink);
+  transition: all 0.15s;
+}
+.btn-export:hover        { background: var(--ink); color: var(--paper); }
+.btn-export.filled       { background: var(--ink); color: var(--paper); }
+.btn-export.filled:hover { opacity: 0.8; }
+.btn-export.danger       { border-color: var(--red); color: var(--red); }
+.btn-export.danger:hover { background: var(--red); color: white; }
+
+
+/* ─── 11. LIGHTBOX ─────────────────────────────── */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox.open { display: flex; }
+.lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 4px;
+}
+.lightbox-close {
+  position: absolute;
+  top: 1rem; right: 1.5rem;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: serif;
+}
+
+
+/* ─── 12. ESTADO VACÍO ─────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--muted);
+  border: 1.5px dashed var(--border);
+  border-radius: 4px;
+}
+.empty .empty-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+.empty p { font-size: 0.85rem; line-height: 1.6; }
+
+
+/* ─── 13. PRINT ────────────────────────────────── */
+@media print {
+  header {
+    background: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .form-panel,
+  .tabs,
+  .export-bar,
+  .btn-sm,
+  .card-actions { display: none !important; }
+
+  #tab-listado { display: block !important; }
+  .damage-card { break-inside: avoid; page-break-inside: avoid; }
+  body { background: white; }
+  .counter-bar { display: flex !important; }
+}

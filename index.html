@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informe de Inspección · Vivienda</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       HEADER — datos del informe
+  ══════════════════════════════════════ -->
+  <header>
+    <div class="header-label">Informe Oficial de Inspección · Vivienda</div>
+    <h1>Registro de Daños Preexistentes<br>
+      <em>al ingreso de la propiedad</em>
+    </h1>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <label>Dirección</label>
+        <span>José Federico Moreno 1356, Mendoza, Argentina</span>
+      </div>
+      <div class="meta-item">
+        <label>Tipo de Propiedad</label>
+        <span>Casa · 2 Plantas</span>
+      </div>
+      <div class="meta-item">
+        <label>Fecha de Entrada</label>
+        <span>01 de mayo de 2026</span>
+      </div>
+      <div class="meta-item">
+        <label>Inquilino</label>
+        <span>Alejandro José Valdez Subotich</span>
+      </div>
+      <div class="meta-item">
+        <label>Arrendador</label>
+        <span>Javier Flores</span>
+      </div>
+      <div class="meta-item">
+        <label>Generado</label>
+        <span id="genDate"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════ -->
+  <main>
+
+    <!-- Tabs de navegación -->
+    <div class="tabs">
+      <button class="tab active" onclick="tabs.switch('registrar', event)">+ Registrar Daño</button>
+      <button class="tab" onclick="tabs.switch('listado', event)">
+        📋 Listado de Daños <span id="tabCount"></span>
+      </button>
+    </div>
+
+    <!-- ── TAB: REGISTRAR ── -->
+    <div class="tab-content active" id="tab-registrar">
+      <div class="form-panel">
+        <h2><span class="icon">🔍</span> Nuevo Daño o Deficiencia</h2>
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Área / Sector</label>
+            <select id="fArea">
+              <option value="">— Seleccionar —</option>
+              <optgroup label="Planta Baja">
+                <option>Entrada / Hall</option>
+                <option>Sala / Living</option>
+                <option>Comedor</option>
+                <option>Cocina</option>
+                <option>Baño Planta Baja</option>
+                <option>Lavadero / Patio</option>
+                <option>Garaje</option>
+              </optgroup>
+              <optgroup label="Planta Alta">
+                <option>Escalera</option>
+                <option>Pasillo Superior</option>
+                <option>Habitación 1</option>
+                <option>Habitación 2</option>
+                <option>Habitación 3</option>
+                <option>Baño Planta Alta</option>
+                <option>Balcón / Terraza</option>
+              </optgroup>
+              <optgroup label="General">
+                <option>Exterior / Fachada</option>
+                <option>Instalación Eléctrica</option>
+                <option>Instalación de Gas</option>
+                <option>Instalación Sanitaria</option>
+                <option>Otro</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label>Gravedad</label>
+            <div class="severity-row" id="sevRow">
+              <button class="sev-btn" data-sev="leve"     onclick="form.setSev('leve')">🟡 Leve</button>
+              <button class="sev-btn" data-sev="moderado" onclick="form.setSev('moderado')">🟠 Moderado</button>
+              <button class="sev-btn" data-sev="grave"    onclick="form.setSev('grave')">🔴 Grave</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Descripción del Daño</label>
+          <input type="text" id="fTitle" placeholder="Ej: Azulejo roto en piso de cocina" />
+        </div>
+
+        <div class="form-row">
+          <label>Detalle adicional (opcional)</label>
+          <textarea id="fDesc" placeholder="Ej: Esquina inferior derecha, peligro de corte. Aproximadamente 20x20cm..."></textarea>
+        </div>
+
+        <!-- Fotos -->
+        <div class="form-row">
+          <label>Fotos como evidencia</label>
+          <div class="photo-zone" id="photoZone">
+            <input type="file" id="fPhotos" accept="image/*" multiple onchange="photos.handle(event)">
+            <div class="upload-icon">📷</div>
+            <p>Toca para agregar fotos<br><small>PNG, JPG, HEIC — múltiple selección</small></p>
+          </div>
+          <div class="thumbs" id="thumbsContainer"></div>
+        </div>
+
+        <!-- Videos -->
+        <div class="form-row">
+          <label>Links de video como evidencia</label>
+          <div id="videoLinks">
+            <div class="video-entry">
+              <input type="url" class="vlink" placeholder="https://youtube.com/... o Google Drive, Dropbox, etc." />
+              <button class="btn-icon" onclick="videos.addField()">+</button>
+            </div>
+          </div>
+          <button class="btn-add-video" onclick="videos.addField()">+ Agregar otro link de video</button>
+        </div>
+
+        <button class="btn-primary" onclick="damages.add()">✓ Agregar al informe</button>
+      </div>
+    </div>
+
+    <!-- ── TAB: LISTADO ── -->
+    <div class="tab-content" id="tab-listado">
+      <div class="counter-bar" id="counterBar"></div>
+
+      <div class="export-bar">
+        <button class="btn-export filled" onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
+        <button class="btn-export" onclick="exporter.toJSON()">⬇ Exportar datos (JSON)</button>
+        <button class="btn-export danger" onclick="damages.clearAll()">🗑 Limpiar todo</button>
+      </div>
+
+      <div class="list-header">
+        <h2>Daños Registrados</h2>
+        <span class="badge" id="totalBadge">0</span>
+      </div>
+
+      <div id="damageList"></div>
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════
+       LIGHTBOX — visor de fotos
+  ══════════════════════════════════════ -->
+  <div class="lightbox" id="lightbox" onclick="lightbox.close()">
+    <button class="lightbox-close" onclick="lightbox.close()">✕</button>
+    <img id="lightboxImg" src="" alt="Evidencia fotográfica">
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SCRIPTS — orden importa
+  ══════════════════════════════════════ -->
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
