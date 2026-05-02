@@ -124,17 +124,21 @@ export default async function routes(app, opts) {
       }
     }
 
-    const area     = (fields.area     || '').trim();
-    const subarea  = (fields.subarea  || '').trim() || null;
-    const title    = (fields.title    || '').trim();
-    const desc     = (fields.desc     || '').trim() || null;
-    const severity = (fields.severity || '').trim();
-    const videos   = parseJsonArray(fields.videos);
+    const area      = (fields.area     || '').trim();
+    const subarea   = (fields.subarea  || '').trim() || null;
+    const title     = (fields.title    || '').trim();
+    const desc      = (fields.desc     || '').trim() || null;
+    const severity  = (fields.severity || '').trim();
+    const videos    = parseJsonArray(fields.videos);
 
-    if (!area || !title || !['leve','moderado','grave'].includes(severity)) {
+    const validSeverity = ['leve','moderado','grave'].includes(severity)
+      ? severity
+      : null;
+
+    if (!area || !title) {
       // limpiar archivos huérfanos
       await Promise.all(photoUrls.map(u => unlink(path.join(uploadsDir, path.basename(u))).catch(() => {})));
-      return reply.code(400).send({ error: 'Campos obligatorios incompletos' });
+      return reply.code(400).send({ error: 'Faltan área o descripción del daño' });
     }
 
     const id = Date.now();
@@ -148,7 +152,7 @@ export default async function routes(app, opts) {
         `INSERT INTO damages
            (id, area, subarea, title, description, severity, videos, date, created_by)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [id, area, subarea, title, desc, severity, JSON.stringify(videos), date, req.user.name]
+        [id, area, subarea, title, desc, validSeverity, JSON.stringify(videos), date, req.user.name]
       );
 
       for (const url of photoUrls) {
@@ -168,7 +172,8 @@ export default async function routes(app, opts) {
     }
 
     return reply.code(201).send({
-      id, area, subarea, title, desc, severity,
+      id, area, subarea, title, desc,
+      severity: validSeverity,
       videos, date, photos: photoUrls,
       created_by: req.user.name,
     });

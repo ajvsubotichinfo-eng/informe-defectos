@@ -105,10 +105,9 @@ const damages = (() => {
 
   let _cache = [];
 
-  function _validate(area, title, sev) {
+  function _validate(area, title) {
     if (!area)  return 'Por favor seleccioná el área de la vivienda.';
     if (!title) return 'Por favor describí el daño.';
-    if (!sev)   return 'Por favor indicá la gravedad del daño.';
     return null;
   }
 
@@ -130,7 +129,7 @@ const damages = (() => {
     const desc     = document.getElementById('fDesc').value.trim();
     const sev      = form.getSev();
 
-    const error = _validate(area, title, sev);
+    const error = _validate(area, title);
     if (error) { alert(error); return; }
 
     const btn = event && event.target && event.target.closest('.btn-primary');

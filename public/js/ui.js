@@ -149,6 +149,7 @@ const videos = (() => {
 const renderer = (() => {
 
   const SEV_ORDER = { grave: 0, moderado: 1, leve: 2 };
+  const SEV_ORDER_NONE = 99;   // los sin clasificar al final
 
   const SEV_LABELS = {
     leve:     '🟡 Leve',
@@ -223,6 +224,10 @@ const renderer = (() => {
       ? `<span class="card-author">· por ${_escape(damage.created_by)}</span>`
       : '';
 
+    const sevHtml = SEV_LABELS[damage.severity]
+      ? `<span class="card-sev sev-${damage.severity}">${SEV_LABELS[damage.severity]}</span>`
+      : `<span class="card-sev sev-none">— Sin clasificar</span>`;
+
     return `
       <div class="damage-card">
         <div class="card-header">
@@ -231,9 +236,7 @@ const renderer = (() => {
             <div class="card-title">${_escape(damage.title)}</div>
             ${descHtml}
           </div>
-          <span class="card-sev sev-${damage.severity}">
-            ${SEV_LABELS[damage.severity] || _escape(damage.severity)}
-          </span>
+          ${sevHtml}
         </div>
         ${_buildEvidenceBlock(damage)}
         <div class="card-actions">
@@ -260,9 +263,11 @@ const renderer = (() => {
       return;
     }
 
-    const sorted = [...damageArray].sort(
-      (a, b) => SEV_ORDER[a.severity] - SEV_ORDER[b.severity]
-    );
+    const sorted = [...damageArray].sort((a, b) => {
+      const aOrder = SEV_ORDER[a.severity] ?? SEV_ORDER_NONE;
+      const bOrder = SEV_ORDER[b.severity] ?? SEV_ORDER_NONE;
+      return aOrder - bOrder;
+    });
 
     el.innerHTML = sorted.map((d, i) => _buildCard(d, i, currentUser)).join('');
   }
@@ -276,13 +281,18 @@ const renderer = (() => {
       return;
     }
 
-    const counts = { leve: 0, moderado: 0, grave: 0 };
-    damageArray.forEach(d => counts[d.severity]++);
+    const counts = { leve: 0, moderado: 0, grave: 0, none: 0 };
+    damageArray.forEach(d => {
+      if (counts[d.severity] !== undefined) counts[d.severity]++;
+      else counts.none++;
+    });
 
     const pills = Object.entries(counts)
       .filter(([, count]) => count > 0)
       .map(([sev, count]) => {
-        const label = count === 1 ? _capitalize(sev) : SEV_PLURAL[sev];
+        const label = sev === 'none'
+          ? 'Sin clasificar'
+          : (count === 1 ? _capitalize(sev) : SEV_PLURAL[sev]);
         return `
           <div class="counter-pill ${sev}">
             <span class="num">${count}</span> ${label}

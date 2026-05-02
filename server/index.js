@@ -67,14 +67,14 @@ async function buildServer() {
   return app;
 }
 
-(async () => {
-  try {
-    await pingDb();
-    const app = await buildServer();
-    await app.listen({ port: PORT, host: HOST });
-    app.log.info(`Servidor escuchando en http://${HOST}:${PORT}`);
-  } catch (err) {
-    console.error('Fallo al arrancar:', err);
-    process.exit(1);
-  }
-})();
+  (async () => {
+    try {
+      await pingDb();
+      const app = await buildServer();
+      await app.listen({ port: PORT, host: HOST });
+      app.log.info(`Servidor escuchando en http://${HOST}:${PORT}`);
+    } catch (err) {
+      console.error('Fallo al arrancar:', err);
+      process.exit(1);
+    }
+  })();

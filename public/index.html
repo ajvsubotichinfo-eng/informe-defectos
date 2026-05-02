@@ -123,11 +123,12 @@
           </div>
 
           <div class="form-row">
-            <label>Gravedad</label>
+            <label>Gravedad (opcional)</label>
             <div class="severity-row" id="sevRow">
-              <button class="sev-btn" data-sev="leve"     onclick="form.setSev('leve')">🟡 Leve</button>
-              <button class="sev-btn" data-sev="moderado" onclick="form.setSev('moderado')">🟠 Moderado</button>
-              <button class="sev-btn" data-sev="grave"    onclick="form.setSev('grave')">🔴 Grave</button>
+              <button type="button" class="sev-btn" data-sev="leve"     onclick="form.setSev('leve')">🟡 Leve</button>
+              <button type="button" class="sev-btn" data-sev="moderado" onclick="form.setSev('moderado')">🟠 Moderado</button>
+              <button type="button" class="sev-btn" data-sev="grave"    onclick="form.setSev('grave')">🔴 Grave</button>
+              <button type="button" class="sev-btn sev-clear" onclick="form.setSev('')">✕ Limpiar</button>
             </div>
           </div>
         </div>

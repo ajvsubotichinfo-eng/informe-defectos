@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS damages (
   subarea     VARCHAR(150)    DEFAULT NULL,
   title       VARCHAR(255)    NOT NULL,
   description TEXT            DEFAULT NULL,
-  severity    ENUM('leve','moderado','grave') NOT NULL,
+  severity    ENUM('leve','moderado','grave') DEFAULT NULL,
   videos      JSON            DEFAULT NULL,
   date        VARCHAR(20)     DEFAULT NULL,
   created_by  VARCHAR(100)    NOT NULL,

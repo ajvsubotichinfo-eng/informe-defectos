@@ -270,6 +270,12 @@ main {
 .sev-btn[data-sev="leve"].active     { background: var(--amber-light);  border-color: var(--amber);  color: var(--amber); }
 .sev-btn[data-sev="moderado"].active { background: var(--orange-light);  border-color: var(--orange); color: var(--orange); }
 .sev-btn[data-sev="grave"].active    { background: var(--red-light);    border-color: var(--red);    color: var(--red); }
+.sev-btn.sev-clear {
+  color: var(--muted);
+  font-size: 0.7rem;
+  border-style: dashed;
+}
+.sev-btn.sev-clear:hover { color: var(--ink); border-color: var(--ink); }
 
 
 /* ─── 6. BOTONES ───────────────────────────────── */
@@ -459,6 +465,7 @@ main {
 .sev-leve     { background: var(--amber-light);  color: var(--amber);  border: 1px solid var(--amber); }
 .sev-moderado { background: var(--orange-light); color: var(--orange); border: 1px solid var(--orange); }
 .sev-grave    { background: var(--red-light);    color: var(--red);    border: 1px solid var(--red); }
+.sev-none     { background: var(--cream);        color: var(--muted);  border: 1px solid var(--border); font-style: italic; }
 
 .card-evidence {
   border-top: 1px solid var(--cream);
@@ -529,6 +536,7 @@ main {
 .counter-pill.leve     { background: var(--amber-light);  color: var(--amber); }
 .counter-pill.moderado { background: var(--orange-light); color: var(--orange); }
 .counter-pill.grave    { background: var(--red-light);    color: var(--red); }
+.counter-pill.none     { background: var(--cream);        color: var(--muted); }
 
 .list-header {
   display: flex;
