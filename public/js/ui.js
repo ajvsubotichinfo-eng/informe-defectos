@@ -185,19 +185,22 @@ const renderer = (() => {
   }
 
   function _buildEvidenceBlock(damage) {
-    if (!damage.photos.length && !damage.videos.length) return '';
+    const photos = Array.isArray(damage.photos) ? damage.photos : [];
+    const videos = Array.isArray(damage.videos) ? damage.videos : [];
 
-    const photosHtml = damage.photos.length
+    if (!photos.length && !videos.length) return '';
+
+    const photosHtml = photos.length
       ? `<div class="evidence-photos">
-          ${damage.photos.map(p =>
+          ${photos.map(p =>
             `<img src="${_escape(p)}" onclick="lightbox.open('${_escape(p)}')" title="Ver foto">`
           ).join('')}
         </div>`
       : '';
 
-    const linksHtml = damage.videos.length
+    const linksHtml = videos.length
       ? `<div class="evidence-links">
-          ${damage.videos.map(v =>
+          ${videos.map(v =>
             `<a href="${_escape(v)}" target="_blank" rel="noopener">🎬 ${_escape(_shortenUrl(v))}</a>`
           ).join('')}
         </div>`

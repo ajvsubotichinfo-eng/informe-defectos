@@ -97,7 +97,7 @@ export default async function routes(app, opts) {
       title:      d.title,
       desc:       d.description,
       severity:   d.severity,
-      videos:     d.videos || [],
+      videos:     _safeArray(d.videos),
       date:       d.date,
       created_by: d.created_by,
       created_at: d.created_at,
@@ -222,4 +222,19 @@ function parseJsonArray(value) {
   } catch {
     return [];
   }
+}
+
+/** Devuelve siempre un array, sin importar si MySQL devolvió JSON parseado o string */
+function _safeArray(value) {
+  if (Array.isArray(value)) return value;
+  if (value === null || value === undefined) return [];
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
 }
